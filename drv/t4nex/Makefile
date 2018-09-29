@@ -11,6 +11,14 @@ CXGBE_COM_OBJS	=	t4_hw.o
 CXGBE_SHR_OBJS	=	shared.o
 CXGBE_NEX_OBJS	=	t4_nexus.o t4_sge.o t4_mac.o t4_ioctl.o t4_l2t.o osdep.o
 
+T4NEX_OBJS	=	$(CXGBE_FW_OBJS) \
+			$(CXGBE_COM_OBJS) \
+			$(CXGBE_SHR_OBJS) \
+			$(CXGBE_NEX_OBJS)
+
+# Override the object list
+OBJS		=	$(T4NEX_OBJS:%.o=$(TOP)/obj.$(ISA)/%.o)
+
 MODNAME		=	t4nex
 SRCS		=	$(CXGBE_NEX_OBJS:%.o=%.c) \
 			$(CXGBE_COM_OBJS:%.o=common/%.c) \
@@ -21,7 +29,8 @@ HDRS		=
 		
 LDFLAGS		+=	-dy -Nmisc/gld -N drv/ip
 
-CFLAGS		+=	-DCONFIG_CHELSIO_T1_1G \
+CFLAGS		+=	-Icommon -Ishared -Ifirmware -I. \
+			-DCONFIG_CHELSIO_T1_1G \
 			-DCONFIG_SMP \
 			-DRX_MAX_COUNT=256 \
 			-DCONFIG_CHELSIO_T1_OFFLOAD \

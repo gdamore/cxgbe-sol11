@@ -229,17 +229,23 @@ t4_mc_getstat(void *arg, uint_t stat, uint64_t *val)
 	case ETHER_STAT_XCVR_INUSE:
 		return (ENOTSUP);
 
+#ifdef	ETHER_STAT_CAP_100GFDX
 	case ETHER_STAT_CAP_100GFDX:
 		*val = !!(lc->supported & FW_PORT_CAP_SPEED_100G);
 		break;
+#endif
 
+#ifdef	ETHER_STAT_CAP_40GFDX
 	case ETHER_STAT_CAP_40GFDX:
 		*val = !!(lc->supported & FW_PORT_CAP_SPEED_40G);
 		break;
+#endif
 
+#ifdef	ETHER_STAT_CAP_25GFDX
 	case ETHER_STAT_CAP_25GFDX:
 		*val = !!(lc->supported & FW_PORT_CAP_SPEED_25G);
 		break;
+#endif
 
 	case ETHER_STAT_CAP_10GFDX:
 		*val = !!(lc->supported & FW_PORT_CAP_SPEED_10G);
@@ -308,17 +314,23 @@ t4_mc_getstat(void *arg, uint_t stat, uint64_t *val)
 		*val = (lc->requested_fc & PAUSE_TX) ? 1 : 0;
 		break;
 
+#ifdef	ETHER_STAT_ADV_CAP_100GFDX
 	case ETHER_STAT_ADV_CAP_100GFDX:
 		*val = !!(lc->advertising & FW_PORT_CAP_SPEED_100G);
 		break;
+#endif
 
+#ifdef	ETHER_STAT_ADV_CAP_40GFDX
 	case ETHER_STAT_ADV_CAP_40GFDX:
 		*val = !!(lc->advertising & FW_PORT_CAP_SPEED_40G);
 		break;
+#endif
 
+#ifdef	ETHER_STAT_ADV_CAP_25GFDX
 	case ETHER_STAT_ADV_CAP_25GFDX:
 		*val = !!(lc->advertising & FW_PORT_CAP_SPEED_25G);
 		break;
+#endif
 
 	case ETHER_STAT_ADV_CAP_10GFDX:
 		*val = !!(lc->advertising & FW_PORT_CAP_SPEED_10G);
@@ -340,17 +352,23 @@ t4_mc_getstat(void *arg, uint_t stat, uint64_t *val)
 		return (ENOTSUP);	/* TODO */
 
 
+#ifdef	ETHER_STAT_LP_CAP_100GFDX
 	case ETHER_STAT_LP_CAP_100GFDX:
 		*val = !!(lc->lp_advertising & FW_PORT_CAP_SPEED_100G);
 		break;
+#endif
 
+#ifdef	ETHER_STAT_LP_CAP_40GFDX
 	case ETHER_STAT_LP_CAP_40GFDX:
 		*val = !!(lc->lp_advertising & FW_PORT_CAP_SPEED_40G);
 		break;
+#endif
 
+#ifdef	ETHER_STAT_LP_CAP_25GFDX
 	case ETHER_STAT_LP_CAP_25GFDX:
 		*val = !!(lc->lp_advertising & FW_PORT_CAP_SPEED_25G);
 		break;
+#endif
 
 	case ETHER_STAT_LP_CAP_10GFDX:
 		*val = !!(lc->lp_advertising & FW_PORT_CAP_SPEED_10G);
@@ -529,8 +547,9 @@ t4_mc_unicst(void *arg, const uint8_t *ucaddr)
 }
 
 int
-t4_addmac(void *arg, const uint8_t *ucaddr)
+t4_addmac(void *arg, const uint8_t *ucaddr, uint64_t flags)
 {
+	(void) flags; /* Used for SRIOV on Solaris, we don't care. */
 	return (t4_mc_unicst(arg, ucaddr));
 }
 
@@ -591,7 +610,7 @@ t4_ring_start(mac_ring_driver_t rh, uint64_t mr_gen_num)
  * Enable interrupt on the specificed rx ring.
  */
 int
-t4_ring_intr_enable(mac_intr_handle_t intrh)
+t4_ring_intr_enable(mac_ring_driver_t intrh)
 {
 	struct sge_rxq *rxq = (struct sge_rxq *)intrh;
 	struct adapter *sc = rxq->port->adapter;
@@ -611,7 +630,7 @@ t4_ring_intr_enable(mac_intr_handle_t intrh)
  * Disable interrupt on the specificed rx ring.
  */
 int
-t4_ring_intr_disable(mac_intr_handle_t intrh)
+t4_ring_intr_disable(mac_ring_driver_t intrh)
 {
 	struct sge_rxq *rxq = (struct sge_rxq *)intrh;
 	struct sge_iq *iq;
@@ -630,10 +649,16 @@ t4_ring_intr_disable(mac_intr_handle_t intrh)
 }
 
 mblk_t *
-t4_poll_ring(void *arg, int n_bytes)
+t4_poll_ring(void *arg, int n_bytes, int npkts)
 {
 	struct sge_rxq *rxq = (struct sge_rxq *)arg;
 	mblk_t *mp = NULL;
+
+	/* Solaris wants to be able to controll how many
+	 * packets are sent up, but illumos doesn't care.
+	 * for now we ignore it.  Hopefully this works.
+	 */
+	(void) npkts;
 
 	ASSERT(n_bytes >= 0);
 	if (n_bytes == 0)
@@ -723,7 +748,6 @@ t4_fill_ring(void *arg, mac_ring_type_t rtype, const int group_index,
 		infop->mri_stat = t4_rx_stat;
 
 		mintr = &infop->mri_intr;
-		mintr->mi_handle = (mac_intr_handle_t)rxq;
 		mintr->mi_enable = t4_ring_intr_enable;
 		mintr->mi_disable = t4_ring_intr_disable;
 
@@ -755,6 +779,7 @@ t4_mc_tx(void *arg, mblk_t *m)
 	return (t4_eth_tx(txq, m));
 }
 
+#ifdef	MAC_CAPAB_TRANSCEIVER
 static int
 t4_mc_transceiver_info(void *arg, uint_t id, mac_transceiver_info_t *infop)
 {
@@ -821,13 +846,16 @@ t4_mc_transceiver_read(void *arg, uint_t id, uint_t page, void *bp,
 		*nread = nbytes;
 	return (rc);
 }
+#endif
 
 static boolean_t
 t4_mc_getcapab(void *arg, mac_capab_t cap, void *data)
 {
 	struct port_info *pi = arg;
 	boolean_t status = B_TRUE;
+#ifdef MAC_CAPAB_TRANSCEIVER
 	mac_capab_transceiver_t *mct;
+#endif
 
 	switch (cap) {
 	case MAC_CAPAB_HCKSUM:
@@ -878,6 +906,7 @@ t4_mc_getcapab(void *arg, mac_capab_t cap, void *data)
 		break;
 	}
 
+#ifdef	MAC_CAPAB_TRANSCEIVER
 	case MAC_CAPAB_TRANSCEIVER:
 		mct = data;
 
@@ -886,6 +915,7 @@ t4_mc_getcapab(void *arg, mac_capab_t cap, void *data)
 		mct->mct_info = t4_mc_transceiver_info;
 		mct->mct_read = t4_mc_transceiver_read;
 		break;
+#endif
 
 	default:
 		status = B_FALSE; /* cap not supported */
@@ -1107,20 +1137,26 @@ t4_mc_getprop(void *arg, const char *name, mac_prop_id_t id, uint_t size,
 			*(link_flowctrl_t *)val = LINK_FLOWCTRL_NONE;
 		break;
 
+#ifdef	MAC_PROP_ADV_100GFDX_CAP
 	case MAC_PROP_ADV_100GFDX_CAP:
 	case MAC_PROP_EN_100GFDX_CAP:
 		*u = !!(lc->advertising & FW_PORT_CAP_SPEED_100G);
 		break;
+#endif
 
+#ifdef	MAC_PROP_ADV_40GFDX_CAP
 	case MAC_PROP_ADV_40GFDX_CAP:
 	case MAC_PROP_EN_40GFDX_CAP:
 		*u = !!(lc->advertising & FW_PORT_CAP_SPEED_40G);
 		break;
+#endif
 
+#ifdef	MAC_PROP_ADV_25GFDX_CAP
 	case MAC_PROP_ADV_25GFDX_CAP:
 	case MAC_PROP_EN_25GFDX_CAP:
 		*u = !!(lc->advertising & FW_PORT_CAP_SPEED_25G);
 		break;
+#endif
 
 	case MAC_PROP_ADV_10GFDX_CAP:
 	case MAC_PROP_EN_10GFDX_CAP:

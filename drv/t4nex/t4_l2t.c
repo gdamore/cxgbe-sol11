@@ -31,8 +31,11 @@
 #include <sys/strsun.h>
 #include <sys/ethernet.h>
 #include <inet/ip.h>
-#include <inet/ipclassifier.h>
 #include <inet/tcp.h>
+#ifdef TCP_OFFLOAD_ENABLE
+/* Note: This is a private header, and you can't use it on Solaris. */
+#include <inet/ipclassifier.h>
+#endif
 
 #include "common/common.h"
 #include "common/t4_msg.h"

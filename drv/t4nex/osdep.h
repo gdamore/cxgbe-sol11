@@ -34,6 +34,12 @@
 /* sys/user.h defines u, and that bothers us. */
 #undef u
 
+/* the cursed container_of macro */
+#if !defined(container_of)
+#define	container_of(m, s, n)	\
+	(void *)((uintptr_t)(m) - (uintptr_t)offsetof(s, n))
+#endif
+
 #define	isdigit(x) ((x) >= '0' && (x) <= '9')
 #define	isspace(x) ((x) == ' ' || (x) == '\t')
 #define	toupper(x) (((x) >= 'a' && (x) <= 'z') ? (x) - 'a' + 'A' : (x))
@@ -137,9 +143,13 @@
 #define	PCI_EXP_LNKSTA_NLW	PCIE_LINKSTS_NEG_WIDTH_MASK
 #define	PCI_EXP_DEVCTL2		0x28
 
+#ifndef PCI_VPD_ADDR
 #define	PCI_VPD_ADDR	2
+#endif
 #define	PCI_VPD_ADDR_F	0x8000
+#ifndef PCI_VPD_DATA
 #define	PCI_VPD_DATA	4
+#endif
 
 #define	__devinit
 #ifndef ARRAY_SIZE

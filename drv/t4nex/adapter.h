@@ -873,7 +873,7 @@ void t4_mc_cb_init(struct port_info *);
 void t4_os_link_changed(struct adapter *sc, int idx, int link_stat);
 void t4_mac_rx(struct port_info *pi, struct sge_rxq *rxq, mblk_t *m);
 void t4_mac_tx_update(struct port_info *pi, struct sge_txq *txq);
-int t4_addmac(void *arg, const uint8_t *ucaddr);
+int t4_addmac(void *arg, const uint8_t *ucaddr, uint64_t flags);
 
 /* t4_ioctl.c */
 int t4_ioctl(struct adapter *sc, int cmd, void *data, int mode);

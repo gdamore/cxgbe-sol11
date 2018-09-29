@@ -37,11 +37,11 @@ distbin :=	DEBUG=
 all:		drv
 #install:	all .WAIT drv cmd man
 lint:		drv cmd
-clean:		inc drv cmd man pkg doc
-distsrcs:	inc drv cmd man pkg doc
+clean:		drv cmd man pkg doc
+distsrcs:	drv cmd man pkg doc
 docs:		doc
 
-clobber:	inc drv cmd man pkg doc
+clobber:	drv cmd man pkg doc
 		$(RM) -f $(DISTNAME)*.zip
 
 include Makefile.targ

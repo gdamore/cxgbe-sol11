@@ -24,7 +24,9 @@
 #define	__CXGBE_T4L2T_H
 
 #include <inet/ip.h>
+#ifdef TCP_OFFLOAD_ENABLE
 #include <inet/ip2mac.h>
+#endif
 
 enum { L2T_SIZE = 4096 };	/* # of L2T entries */
 
