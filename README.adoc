@@ -33,12 +33,9 @@ The original code is distributed under the terms of the CDDL by Chelsio.
 Apparently there is a Chelsio T4 driver for Solaris, but it lacks support
 for the T6 chipset.  This work is meant to address that deficiency.
 
-This repository including the local additions I have made are licensed
-under the same CDDL terms.  Should Oracle want to use any of this work,
-they will first need to get permission from Chelsio.  Then they could
-ask me for my Makefile stuff, or they could (probably far more easily)
-just incorporate their own Makefile glue.  Nothing magic here, really,
-and I can't answer any questions about the relationship between Chelsio
-and Oracle as that is entirely up to those to separate parties.  If you
-want this to be officially supported by Solaris, talk to Oracle, and
-good luck to you!
+This repository including the local additions and changes I have made are
+licensed under the same CDDL terms.  Should Oracle want to use any of this
+work, they will first need to get permission from Chelsio.  I will be happy
+to discuss making my modifications to this code available to Oracle as
+well.  For now they remain under CDDL.
+

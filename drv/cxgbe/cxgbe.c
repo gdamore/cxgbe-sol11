@@ -74,7 +74,7 @@ struct dev_ops cxgbe_dev_ops = {
 
 static struct modldrv modldrv = {
 	.drv_modops =		&mod_driverops,
-	.drv_linkinfo =		"Chelsio T4/T5 NIC " DRV_VERSION,
+	.drv_linkinfo =		"Chelsio T4/T5/T6 NIC " DRV_VERSION,
 	.drv_dev_ops =		&cxgbe_dev_ops
 };
 
@@ -147,6 +147,7 @@ cxgbe_devo_attach(dev_info_t *dip, ddi_attach_cmd_t cmd)
 	mac->m_priv_props = pi->props;
 	mac->m_margin = 22; /* TODO: mac_register(9s) and onnv code disagree */
 
+#ifdef ILLUMOS
 	if (!mac->m_callbacks->mc_unicst) {
 		cmn_err(CE_NOTE, "%s%d: Multiple Rings Enabled",
 			ddi_driver_name(pi->dip), ddi_get_instance(pi->dip));
@@ -154,6 +155,10 @@ cxgbe_devo_attach(dev_info_t *dip, ddi_attach_cmd_t cmd)
 	} else
 		cmn_err(CE_NOTE, "%s%d: Multiple Rings Disbled",
 			ddi_driver_name(pi->dip), ddi_get_instance(pi->dip));
+#else
+	cmn_err(CE_NOTE, "%s%d: Multiple Rings Not Supported (Solaris)",
+		ddi_driver_name(pi->dip), ddi_get_instance(pi->dip));
+#endif
 	rc = mac_register(mac, &mh);
 	mac_free(mac);
 	if (rc != 0) {
