@@ -27,7 +27,7 @@ SRCS		=	$(CXGBE_NEX_OBJS:%.o=%.c) \
 
 HDRS		=
 		
-LDFLAGS		+=	-dy -Nmisc/gld -N drv/ip
+LDFLAGS		+=	-dy -Nmisc/mac -Nmisc/gld -N drv/ip
 
 CFLAGS		+=	-Icommon -Ishared -Ifirmware -I. \
 			-DCONFIG_CHELSIO_T1_1G \

@@ -12,7 +12,7 @@ MODNAME		=	cxgbe
 SRCS		=	cxgbe.c
 HDRS		=	
 
-LDFLAGS		+=	-dy -Nmisc/gld -N drv/ip
+LDFLAGS		+=	-dy -N drv/ip -Nmisc/mac
 
 CFLAGS		+=	-I../t4nex/shared -I../t4nex \
 			-DCONFIG_CHELSIO_T1_1G \

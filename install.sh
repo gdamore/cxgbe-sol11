@@ -32,7 +32,7 @@ compat2alias()
 }
 
 
-SAFE=echo
+#SAFE=echo
 
 installdrv()
 {
@@ -164,18 +164,5 @@ t4nex_COMPAT="
 DRVS="cxgbe t4nex"
 for DRV in ${DRVS}
 do
-
-	drvpath=/kernel/drv/$(isainfo -k)
-	stamp=$(env TZ=UTC date +%FT%T)
-
-	# make a backup
-	if [[ -f $drvpath/$DRV ]]
-	then
-		echo cp $drvpath/$DRV $drvpath/$DRV.$stamp
-	fi
-
-	echo cp obj.$(isainfo -k)/$DRV $drvpath
-
-	drvalias=$(compat2alias $(eval echo '$'${DRV}_COMPAT))
-	echo add_drv -i "${drvalias}" ${DRV}
+	installdrv $DRV
 done
