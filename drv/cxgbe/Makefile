@@ -14,7 +14,8 @@ HDRS		=
 
 LDFLAGS		+=	-dy -Nmisc/gld -N drv/ip
 
-CFLAGS		+=	-DCONFIG_CHELSIO_T1_1G \
+CFLAGS		+=	-I../t4nex/shared -I../t4nex \
+			-DCONFIG_CHELSIO_T1_1G \
 			-DCONFIG_SMP \
 			-DRX_MAX_COUNT=256 \
 			-DCONFIG_CHELSIO_T1_OFFLOAD \

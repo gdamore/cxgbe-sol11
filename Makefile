@@ -21,7 +21,7 @@ ARCH		=	$(HOST_ARCH:-%=%)
 ARCHS_LIST	=	$(HOST_ARCH:-%=%_ARCHS)
 ARCHS		=	${${ARCHS_LIST}}
 
-SUBDIRS		=	inc drv cmd pkg man doc
+SUBDIRS		=	drv cmd pkg man doc
 
 DISTSRCS	=	Makefile Makefile.common Makefile.targ \
 			README LICENSE
@@ -33,10 +33,10 @@ HASH		:sh=	echo "\043"
 distdebug :=	DEBUG=-DDEBUG
 distbin :=	DEBUG=
 
-all:		inc .WAIT drv cmd man
-install:	all .WAIT inc drv cmd man
+#all:		drv cmd man
+all:		drv
+#install:	all .WAIT drv cmd man
 lint:		drv cmd
-ddict:		drv
 clean:		inc drv cmd man pkg doc
 distsrcs:	inc drv cmd man pkg doc
 docs:		doc
