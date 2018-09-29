@@ -1,0 +1,32 @@
+#
+# drv/Makefile.drv
+#
+
+all:	$(HDRS) $(SRCS) .WAIT $(MOD)
+
+clean:
+	$(RM) $(OBJS) $(LINTS)
+
+clobber:
+	$(RM) $(MOD)
+
+$(MOD):	$(OBJS)
+	$(LD) -r $(LDFLAGS) -o $@ $(OBJS)
+
+$(TOP)/obj.$(ISA)/%.o:	%.c
+	$(CC) -c -o $@ $(CFLAGS) $(CPPFLAGS) $<
+
+# These three rules exist to accommodate the t4nex subdirectories
+
+$(TOP)/obj.$(ISA)/%.o:	common/%.c
+	$(CC) -c -o $@ $(CFLAGS) $(CPPFLAGS) $<
+
+$(TOP)/obj.$(ISA)/%.o:	shared/%.c
+	$(CC) -c -o $@ $(CFLAGS) $(CPPFLAGS) $<
+
+$(TOP)/obj.$(ISA)/%.o:	firmware/%.c
+	$(CC) -c -o $@ $(CFLAGS) $(CPPFLAGS) $<
+
+
+include $(TOP)/Makefile.targ
+

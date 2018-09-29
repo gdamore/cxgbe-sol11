@@ -1,0 +1,37 @@
+#
+# Makefile.common
+#
+
+VER		=	0.0.1
+REV		:sh=	date '+%Y.%m.%d.%H.%M'
+INSTALL		=	/usr/sbin/install
+LD		=	ld
+MKDIR		=	mkdir -p
+sparc_ARCHS	=	sparcv9
+i386_ARCHS	=	amd64
+ARCH		=	$(HOST_ARCH:-%=%)
+ARCHS_LIST	=	$(HOST_ARCH:-%=%_ARCHS)
+ARCHS		=	${${ARCHS_LIST}}
+DISTFILES	=	$(TOP)/DISTFILES
+ISA		:sh=	uname -p
+HASH		:sh=	echo \043
+STUDIO		=	$(HASH)
+$(STUDIO)GCC	=	$(HASH)
+#
+# These are for GCC
+#
+$(STUDIO)CC		=	gcc
+$(STUDIO)COPTFLAG	=	-O2
+$(STUDIO)sparcv9_CFLAGS	=	-Wall -m64 -D_SYSCALL32
+$(STUDIO)amd64_CFLAGS	=	-Wall -m64 -D_SYSCALL32
+$(STUDIO)amd64_STANDFLAG=	-mcmodel=kernel
+$(STUDIO)STANDFLAG	=	$($(ISA)_STANDFLAG) -ffreestanding
+#
+# These are for Solaris Studio C
+#
+$(GCC)CC		=	cc
+$(GCC)COPTFLAG		=	-xO2
+$(GCC)sparcv9_CFLAGS	=	-v -xarch=generic64 -D_SYSCALL32
+$(GCC)amd64_CFLAGS	=	-v -xarch=generic64 -D_SYSCALL32
+$(GCC)amd64_STANDFLAG	=	-xmodel=kernel
+$(GCC)STANDFLAG		=	$($(ISA)_STANDFLAG)

@@ -1,0 +1,44 @@
+# Solaris 11.3+ Chelsio T4/T5/T6 Drivers
+
+NOTE: This is a work in progress... and probably doesn't even compile yet!
+
+This code was imported from illumos -- https://github.com/illumos/illumos-gate
+and isolated into a directory suitable for compilation on Solaris 11.4
+systems.
+
+## amd64 only
+
+This work only supports AMD64 (which includes Intel systems).  At this
+point I have no idea how much Work it would be to make this function in
+a SPARC based system.  It might just be updating Makefiles.
+
+## Why? Support?
+
+This work was done on contract, for a client who wants support for these
+drivers with their supported Solaris system.  I do not regularly use
+Solaris, nor do I own instances of this hardware.  This means that my
+own ability to support this work long term is somewhat limited.
+
+## Two drivers
+
+The cxgbe driver is delivered as two pieces.  A thin driver called
+cxgbe provides the hooks to the mac layer, and is the ultimate target
+driver.  But underneath there is a t4nex driver that has pretty
+much the entire set of "real" code.  You need both drivers to
+have a functioning system.
+
+## License
+
+The original code is distributed under the terms of the CDDL by Chelsio.
+Apparently there is a Chelsio T4 driver for Solaris, but it lacks support
+for the T6 chipset.  This work is meant to address that deficiency.
+
+This repository including the local additions I have made are licensed
+under the same CDDL terms.  Should Oracle want to use any of this work,
+they will first need to get permission from Chelsio.  Then they could
+ask me for my Makefile stuff, or they could (probably far more easily)
+just incorporate their own Makefile glue.  Nothing magic here, really,
+and I can't answer any questions about the relationship between Chelsio
+and Oracle as that is entirely up to those to separate parties.  If you
+want this to be officially supported by Solaris, talk to Oracle, and
+good luck to you!

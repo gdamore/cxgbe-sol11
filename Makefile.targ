@@ -1,0 +1,15 @@
+#
+# Makefile.targ
+#
+
+distsubdirs:
+	@for f in $(SUBDIRS); do \
+		(cd $$f; $(MAKE) RELDIR=$(RELDIR)/$$f distlist ) \
+	done
+
+distlist:
+	@test -n "$(SUBDIRS)" && \
+		$(MAKE) RELDIR=$(RELDIR) distsubdirs; true
+	@echo $(DISTSRCS:%=$(RELDIR)/%)
+
+distsrcs:	$(DISTSRCS)

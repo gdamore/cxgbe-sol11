@@ -1,0 +1,13 @@
+#
+# drv/Makefile.common
+#
+
+include	$(TOP)/Makefile.common
+
+CPPFLAGS	+=	-I $(TOP)/inc
+DEFS		=	-D_KERNEL $(DEBUG)
+CPPFLAGS	+=	$(DEFS)
+CFLAGS		+=	$($(ISA)_CFLAGS) $(COPTFLAG) $(STANDFLAG)
+MOD		=	$(TOP)/obj.$(ISA)/$(MODNAME)
+OBJS		=	$(SRCS:%.c=$(TOP)/obj.$(ISA)/%.o)
+LINTS		=
