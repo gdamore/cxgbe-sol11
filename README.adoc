@@ -1,6 +1,7 @@
 # Solaris 11.3+ Chelsio T4/T5/T6 Drivers
 
-NOTE: This is a work in progress... and probably doesn't even compile yet!
+NOTE: This is a work in progress... it compiles, but it may destroy your
+data, make your system unbootable, or terrorize your pets.  Use at your own risk!
 
 This code was imported from illumos -- https://github.com/illumos/illumos-gate
 and isolated into a directory suitable for compilation on Solaris 11.4
